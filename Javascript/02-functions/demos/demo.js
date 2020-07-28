@@ -1,22 +1,17 @@
-const user = {name: "Sam"};
 
-function greet(user) {
-  const message = "Hello";
-  if (user) {
-    alert(`${message}, ${user.name}!`);
-  }
-
-  function inner() {
-    let a = 5;
-  }
+function sum(x, y) {
+  return x + y;
 }
 
-greet(user);
-/*
-Интересно
-var pwd = 'gtgzrflfyct11';
-alert(this.pwd);  // gtgzrflfyct11
+console.log(sum(5, 2));
 
-let pwd = 'gtgzrflfyct11';
-alert(this.pwd);  // undefined
-*/
+let fact = function f(x) {
+  return x > 1
+    ? x * f(x-1)
+    : 1;
+};
+
+console.log(fact(4));
+
+console.log(sum.name);
+console.log(fact.name);
