@@ -20,3 +20,6 @@ console.log(fruits[2]);
 console.log(fruits.length);  // 3
 ```
 
+
+
+![test](img/test.svg)
