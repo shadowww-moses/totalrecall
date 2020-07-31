@@ -9,7 +9,7 @@
 
 ## Общий принцип
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515102105435.png" alt="image-20200515102105435" style="zoom:80%;" />
+<img src="img\image-20200515102105435.png" alt="image-20200515102105435" style="zoom:80%;" />
 
 * Экспортировать можно через `export` и `export default`
 
@@ -51,7 +51,7 @@
 
 Есть техника, когда вместо файла в импорте указывается папка. В этом случае в ней должен лежать файл `index.js` и вебпак поймет, что надо делать импорт из него:
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515111023849.png" alt="image-20200515111023849" style="zoom:80%;" />
+<img src="img\image-20200515111023849.png" alt="image-20200515111023849" style="zoom:80%;" />
 
 > В строчке `import React from 'react'` кроется какая-то особенность. Не знаю как это работает. Сначала думал, что по технике выше. Но, во-первых, React тут пишется с большой буквы, а папка в node_modules называется react, то есть с маленькой. При таких условиях обычные импорты у меня не работали.
 
@@ -75,13 +75,13 @@ export {default} from './about-page'
 
 Оборачиваем приложение в BrowserRouter:
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515131112212.png" alt="image-20200515131112212" style="zoom:80%;" />
+<img src="img\image-20200515131112212.png" alt="image-20200515131112212" style="zoom:80%;" />
 
 <p align="center"><b>[2]</b></p>
 
 В приложении делаем сопоставление маршрутов и компонентов:
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515131253988.png" alt="image-20200515131253988" style="zoom:80%;" />
+<img src="img\image-20200515131253988.png" alt="image-20200515131253988" style="zoom:80%;" />
 
 Уже можно переходить между "страницами", вводя ссылки в браузер. В случае с корнем надо писать exact, иначе все время будет открываться главная страница, даже если попробовать перейти на about. Если в Route не указывать path, это расценивается как "что бы то ни было, введенное в адресную строку".
 
@@ -89,13 +89,13 @@ export {default} from './about-page'
 
 В компоненте главной страницы я подключил собственный компонент меню:
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515131410864.png" alt="image-20200515131410864" style="zoom:80%;" />
+<img src="img\image-20200515131410864.png" alt="image-20200515131410864" style="zoom:80%;" />
 
 <p align="center"><b>[4]</b></p>
 
 Чтобы реализовать переходы между компонентами с помощью ссылок, пользуемся NavLink или Link.  В них указываются зарегистрированные в Switch маршруты:
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200515131515555.png" alt="image-20200515131515555" style="zoom:80%;" />
+<img src="img\image-20200515131515555.png" alt="image-20200515131515555" style="zoom:80%;" />
 
 Единственное отличие NavLink и Link в том, что NavLink имеет дополнительный атрибут стиля для "текущей" ссылки - если текущая страница совпадает с ссылкой, ее для удобства можно раскрасить особенным образом.
 
@@ -121,7 +121,7 @@ export {default} from './about-page'
 
 Для работы нам понадобятся: главный файл (1). В нем мы объявим переменную с сотрудником и функции-обработчики, которые передадим в файл с формой (2) и элементами ввода (3). Таким образом, в (1) мы подготовим всю логику, а (2) и (3) будут просто содержать разметку и принимать готовые  функции, которые им надо будет просто вызвать.
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520183013546.png" alt="image-20200520183013546" style="zoom:80%;" />
+<img src="img\image-20200520183013546.png" alt="image-20200520183013546" style="zoom:80%;" />
 
 **[1-6]** Переменную для хранения объекта сотрудника и сеттер для него создаем с помощью хука. Изначально объект абсолютно пустой и не содержит ни одного поля. Однако нам очевидно известна структура этого объекта и как должны называться его поля.
 
@@ -154,7 +154,7 @@ const handleChange = (event) => {
 
 <p align="center">[1]</p>
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164724303.png" alt="image-20200520164724303" style="zoom:80%;" />
+<img src="img\image-20200520164724303.png" alt="image-20200520164724303" style="zoom:80%;" />
 
 <img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164739906.png" alt="image-20200520164739906" style="zoom:80%;" />
 
@@ -162,13 +162,13 @@ const handleChange = (event) => {
 
 <p align="center">[2]</p>
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164917525.png" alt="image-20200520164917525" style="zoom:80%;" />
+<img src="img\image-20200520164917525.png" alt="image-20200520164917525" style="zoom:80%;" />
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164944994.png" alt="image-20200520164944994" style="zoom:80%;" />
+<img src="img\image-20200520164944994.png" alt="image-20200520164944994" style="zoom:80%;" />
 
 <p align="center">[3]</p>
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520165052313.png" alt="image-20200520165052313" style="zoom:80%;" />
+<img src="img\image-20200520165052313.png" alt="image-20200520165052313" style="zoom:80%;" />
 
 
 
