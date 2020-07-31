@@ -156,9 +156,9 @@ const handleChange = (event) => {
 
 <img src="img\image-20200520164724303.png" alt="image-20200520164724303" style="zoom:80%;" />
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164739906.png" alt="image-20200520164739906" style="zoom:80%;" />
+<img src="img\image-20200520164739906.png" alt="image-20200520164739906" style="zoom:80%;" />
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React - Основы\img\image-20200520164804323.png" alt="image-20200520164804323" style="zoom:80%;" />
+<img src="img\image-20200520164804323.png" alt="image-20200520164804323" style="zoom:80%;" />
 
 <p align="center">[2]</p>
 

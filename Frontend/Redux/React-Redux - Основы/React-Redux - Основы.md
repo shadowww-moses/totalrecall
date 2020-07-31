@@ -114,7 +114,7 @@ Redux - это, грубо говоря, самостоятельная техн
 
 <img src="img\image-20200529172208813.png" alt="image-20200529172208813" style="zoom:80%;" />
 
-<img src="G:\Documents\typora\NextLevel\React-Redux\React-Redux - Основы\img\image-20200529172324502.png" alt="image-20200529172324502" style="zoom:80%;" />
+<img src="img\image-20200529172324502.png" alt="image-20200529172324502" style="zoom:80%;" />
 
 
 
