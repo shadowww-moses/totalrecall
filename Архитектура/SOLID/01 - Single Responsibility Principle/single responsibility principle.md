@@ -116,6 +116,7 @@ public class TradeProcessor
 ```c#
 public class TradeProcessor
 {
+    // Этот метод будет выделен в абстракцию ITradeDataProvider
     private IEnumerable<string> ReadTradeData(Stream stream)
     {
         var tradeData = new List<string>();
@@ -130,6 +131,7 @@ public class TradeProcessor
         return tradeData;
     }
 
+    // Этот метод - в абстракцию ITradeParser
     private IEnumerable<TradeRecord> ParseTrades(IEnumerable<string> tradeData)
     {
         var trades = new List<TradeRecord>();
@@ -138,11 +140,13 @@ public class TradeProcessor
         {
             var fields = line.Split(new char[] { ',' });
 
+            // Валидацию тоже делегируем, максимально дробя функционал на самостоятельные части
             if (!ValidateTradeData(fields, lineCount))
             {
                 continue;
             }
 
+            // И форматирование тоже
             var trade = MapTradeDataToTradeRecord(fields);
 
             trades.Add(trade);
@@ -153,6 +157,7 @@ public class TradeProcessor
         return trades;
     }
 
+    // Будущая абстракция ITradeValidator
     private bool ValidateTradeData(string[] fields, int currentLine)
     {
         if (fields.Length != 3)
@@ -184,11 +189,13 @@ public class TradeProcessor
         return true;
     }
 
+    // ILogger позволит в высокоуровневом классе отвязаться от консоли
     private void LogMessage(string message, params object[] args)
     {
         Console.WriteLine(message, args);
     }
 
+    // Сопоставлением полей займется абстракция ITradeMapper
     private TradeRecord MapTradeDataToTradeRecord(string[] fields)
     {
         var sourceCurrencyCode = fields[0].Substring(0, 3);
@@ -207,6 +214,7 @@ public class TradeProcessor
         return trade;
     }
 
+    // Персистентность нам обеспечит абстракция ITradeStorage
     private void StoreTrades(IEnumerable<TradeRecord> trades)
     {
         using (var connection = new System.Data.SqlClient
@@ -237,6 +245,7 @@ public class TradeProcessor
         LogMessage("INFO: {0} trades processed", trades.Count());
     }
 
+    // В итоге весь процесс обработки сведется к вызову всего трех высокоуровневых команд
     public void ProcessTrades(Stream stream)
     {
         var lines = ReadTradeData(stream);
@@ -245,6 +254,15 @@ public class TradeProcessor
     }
 
     private static float LotSize = 100000f;
+}
+
+// Тип для отдельной биржевой записи
+public class TradeRecord
+{
+    public string DestinationCurrency;
+    public float Lots;
+    public decimal Price;
+    public string SourceCurrency;
 }
 ```
 
