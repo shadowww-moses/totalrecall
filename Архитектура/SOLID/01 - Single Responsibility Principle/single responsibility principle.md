@@ -11,7 +11,7 @@ public class TradeProcessor
 {
     public void ProcessTrades(Stream stream)
     {
-        // Читаем данные из файла
+        // <-- Читаем данные из файла
         var lines = new List<string>();
         using (var reader = new StreamReader(stream))
         {
@@ -24,7 +24,7 @@ public class TradeProcessor
 
         var trades = new List<TradeRecord>();
 
-        // Анализируем данные, форматируем
+        // <-- Анализируем данные, форматируем
         var lineCount = 1;
         foreach (var line in lines)
         {
@@ -70,8 +70,9 @@ public class TradeProcessor
             lineCount++;
         }
 
-        // Записываем информацию в БД
-        using (var connection = new System.Data.SqlClient.SqlConnection("Data Source=(local);Initial Catalog=TradeDatabase;Integrated Security=True;"))
+        // <-- Записываем информацию в БД
+        using (var connection = new System.Data.SqlClient
+               .SqlConnection("Data Source=(local);Initial Catalog=TradeDatabase;Integrated Security=True;"))
         {
             connection.Open();
             using(var transaction = connection.BeginTransaction())
