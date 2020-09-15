@@ -245,7 +245,8 @@ public class TradeProcessor
         LogMessage("INFO: {0} trades processed", trades.Count());
     }
 
-    // В итоге весь процесс обработки сведется к вызову всего трех высокоуровневых команд
+    // В итоге весь процесс обработки сведется к вызову всего трех высокоуровневых команд,
+    // которые и останутся в классе TradeProcessor
     public void ProcessTrades(Stream stream)
     {
         var lines = ReadTradeData(stream);
@@ -255,7 +256,9 @@ public class TradeProcessor
 
     private static float LotSize = 100000f;
 }
+```
 
+```c#
 // Тип для отдельной биржевой записи
 public class TradeRecord
 {
@@ -270,3 +273,319 @@ public class TradeRecord
 
 ## Рефакторинг к абстракциям
 
+Обозначим абстракции с помощью интерфейсов и напишем их реализации
+
+### ITradeDataProvider
+
+```c#
+public interface ITradeDataProvider
+{
+    IEnumerable<string> GetTradeData();
+}
+```
+
+```c#
+public class StreamTradeDataProvider : ITradeDataProvider
+{
+    private readonly Stream stream;
+    
+    public StreamTradeDataProvider(Stream stream)
+    {
+        this.stream = stream;
+    }
+
+    public IEnumerable<string> GetTradeData()
+    {
+        var tradeData = new List<string>();
+        using (var reader = new StreamReader(stream))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                tradeData.Add(line);
+            }
+        }
+        return tradeData;
+    }
+}
+```
+
+
+
+### ITradeParser
+
+```c#
+public interface ITradeParser
+{
+    IEnumerable<TradeRecord> Parse(IEnumerable<string> tradeData);
+}
+```
+
+```c#
+public class SimpleTradeParser : ITradeParser
+{
+    private readonly ITradeValidator tradeValidator;
+    private readonly ITradeMapper tradeMapper;
+
+    public SimpleTradeParser(ITradeValidator tradeValidator, ITradeMapper tradeMapper)
+    {
+        this.tradeValidator = tradeValidator;
+        this.tradeMapper = tradeMapper;
+    }
+
+    public IEnumerable<TradeRecord> Parse(IEnumerable<string> tradeData)
+    {
+        var trades = new List<TradeRecord>();
+        var lineCount = 1;
+        foreach (var line in tradeData)
+        {
+            var fields = line.Split(new char[] { ',' });
+
+            if (!tradeValidator.Validate(fields))
+            {
+                continue;
+            }
+
+            var trade = tradeMapper.Map(fields);
+
+            trades.Add(trade);
+
+            lineCount++;
+        }
+
+        return trades;
+    }
+}
+```
+
+
+
+### ITradeValidator
+
+```c#
+public interface ITradeValidator
+{
+    bool Validate(string[] tradeData);
+}
+```
+
+```c#
+public class SimpleTradeValidator : ITradeValidator
+{
+    private readonly ILogger logger;
+
+    public SimpleTradeValidator(ILogger logger)
+    {
+        this.logger = logger;
+    }
+
+    public bool Validate(string[] tradeData)
+    {
+        if (tradeData.Length != 3)
+        {
+            logger.LogWarning("Line malformed. Only {0} field(s) found.", tradeData.Length);
+            return false;
+        }
+
+        if (tradeData[0].Length != 6)
+        {
+            logger.LogWarning("Trade currencies malformed: '{0}'", tradeData[0]);
+            return false;
+        }
+
+        int tradeAmount;
+        if (!int.TryParse(tradeData[1], out tradeAmount))
+        {
+            logger.LogWarning("Trade not a valid integer: '{0}'", tradeData[1]);
+            return false;
+        }
+
+        decimal tradePrice;
+        if (!decimal.TryParse(tradeData[2], out tradePrice))
+        {
+            logger.LogWarning("Trade price not a valid decimal: '{0}'", tradeData[2]);
+            return false;
+        }
+
+        return true;
+    }
+}
+```
+
+
+
+### ITradeMapper
+
+```c#
+public interface ITradeMapper
+{
+    TradeRecord Map(string[] fields);
+}
+```
+
+```c#
+public class SimpleTradeMapper : ITradeMapper
+{
+    private static float LotSize = 100000f;
+    
+    public TradeRecord Map(string[] fields)
+    {
+        var sourceCurrencyCode = fields[0].Substring(0, 3);
+        var destinationCurrencyCode = fields[0].Substring(3, 3);
+        var tradeAmount = int.Parse(fields[1]);
+        var tradePrice = decimal.Parse(fields[2]);
+
+        var trade = new TradeRecord
+        {
+            SourceCurrency = sourceCurrencyCode,
+            DestinationCurrency = destinationCurrencyCode,
+            Lots = tradeAmount / LotSize,
+            Price = tradePrice
+        };
+
+        return trade;
+    }
+}
+```
+
+
+
+### ILogger
+
+```c#
+public interface ILogger
+{
+    void LogWarning(string message, params object[] args);
+
+    void LogInfo(string message, params object[] args);
+}
+```
+
+```c#
+public class ConsoleLogger : ILogger
+{
+    public void LogWarning(string message, params object[] args)
+    {
+        Console.WriteLine(string.Concat("WARN: ", message), args);
+    }
+
+    public void LogInfo(string message, params object[] args)
+    {
+        Console.WriteLine(string.Concat("INFO: ", message), args);
+    }
+}
+```
+
+
+
+### ITradeStorage
+
+```c#
+public interface ITradeStorage
+{
+    void Persist(IEnumerable<TradeRecord> trades);
+}
+```
+
+```c#
+public class AdoNetTradeStorage : ITradeStorage
+{
+    private readonly ILogger logger;
+
+    public AdoNetTradeStorage(ILogger logger)
+    {
+        this.logger = logger;
+    }
+
+    public void Persist(IEnumerable<TradeRecord> trades)
+    {
+        using (var connection = new System.Data
+               .SqlClient.SqlConnection("Data Source=(local);Initial Catalog=TradeDatabase;Integrated Security=True;"))
+        {
+            connection.Open();
+            using (var transaction = connection.BeginTransaction())
+            {
+                foreach (var trade in trades)
+                {
+                    var command = connection.CreateCommand();
+                    command.Transaction = transaction;
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.CommandText = "dbo.insert_trade";
+                    command.Parameters.AddWithValue("@sourceCurrency", trade.SourceCurrency);
+                    command.Parameters.AddWithValue("@destinationCurrency", trade.DestinationCurrency);
+                    command.Parameters.AddWithValue("@lots", trade.Lots);
+                    command.Parameters.AddWithValue("@price", trade.Price);
+
+                    command.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            connection.Close();
+        }
+
+        logger.LogInfo("{0} trades processed", trades.Count());
+    }
+}
+```
+
+
+
+## Собираем их всех вместе
+
+Вот таким компактным становится класс TradeProcessor после делегирования обязанностей специализированным классам:
+
+```c#
+public class TradeProcessor
+{
+    private readonly ITradeDataProvider tradeDataProvider;
+    private readonly ITradeParser tradeParser;
+    private readonly ITradeStorage tradeStorage;
+    
+    public TradeProcessor(ITradeDataProvider tradeDataProvider, 
+                          ITradeParser tradeParser, 
+                          ITradeStorage tradeStorage)
+    {
+        this.tradeDataProvider = tradeDataProvider;
+        this.tradeParser = tradeParser;
+        this.tradeStorage = tradeStorage;
+    }
+
+    public void ProcessTrades()
+    {
+        var lines = tradeDataProvider.GetTradeData();
+        var trades = tradeParser.Parse(lines);
+        tradeStorage.Persist(trades);
+    }
+}
+```
+
+Теперь остается создать экземпляры всех абстракций и правильно соединить из друг с другом:
+
+```c#
+class Program
+{
+    static void Main(string[] args)
+    {
+        var tradeStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SingleResponsibilityPrinciple.trades.txt");
+
+        var logger = new ConsoleLogger();
+        var tradeValidator = new SimpleTradeValidator(logger);
+        var tradeDataProvider = new StreamTradeDataProvider(tradeStream);
+        var tradeMapper = new SimpleTradeMapper();
+        var tradeParser = new SimpleTradeParser(tradeValidator, tradeMapper);
+        var tradeStorage = new AdoNetTradeStorage(logger);
+
+        var tradeProcessor = new TradeProcessor(tradeDataProvider, tradeParser, tradeStorage);
+        tradeProcessor.ProcessTrades();
+
+        Console.ReadKey();
+    }
+}
+```
+
+
+
+## Вывод
+
+В итоге класс TradeProcessor все еще занимается тремя вещами - получает данные из источника, форматирует их и записывает в хранилище. Но теперь реализация этих вещей скрыта за абстракциями и в случае изменений требований к любому компоненту правки затронут только этот компонент, но не TradeProcessor, в отличие от исходного примера. Поэтому TradeProcessor теперь соответствует SRP в полной мере.
