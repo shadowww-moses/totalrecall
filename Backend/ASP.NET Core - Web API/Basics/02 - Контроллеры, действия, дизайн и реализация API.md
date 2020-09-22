@@ -4,7 +4,7 @@
 
 Необходимые неймспейсы и за что именно каждый отвечает:
 
-![image-20200423090120394](img\image-20200423090120394.png)
+![image-20200423090120394](img/image-20200423090120394.png)
 
 <p align="center">[1]</p>
 
@@ -25,7 +25,7 @@
 
 # Действия
 
-![image-20200423090553656](img\image-20200423090553656.png)
+![image-20200423090553656](img/image-20200423090553656.png)
 
 <p align="center">[1]</p>
 
@@ -74,7 +74,7 @@ public object Get()
 
 Список наиболее популярных статус кодов:
 
-<img src="img\image-20200423091407381.png" alt="image-20200423091407381" style="zoom:80%;" />
+<img src="img/image-20200423091407381.png" alt="image-20200423091407381" style="zoom:80%;" />
 
 Для наиболее распространенных статус-кодов существуют отдельные методы, как показано в примере: `NotFound`, `Ok`, `BadRequest`. Можно набрать `this.` и полистать доступный список.
 
@@ -273,7 +273,7 @@ public async Task<IActionResult> GetFiltered(string? firstName, string? lastName
 
 ### Отправка запроса через Postman
 
-![image-20200423112458643](img\image-20200423112458643.png)
+![image-20200423112458643](img/image-20200423112458643.png)
 
 <p align="center">[1]</p>
 
@@ -345,7 +345,7 @@ public async Task<IActionResult> PostEmployee([FromBody]Employees employee)
 
 ### Отправка запроса через Postman
 
-![image-20200423120909376](img\image-20200423120909376.png)
+![image-20200423120909376](img/image-20200423120909376.png)
 
 Указывается тип запроса POST и адрес. Сам объект для отправки составляем во вкладке Body, указав raw и JSON.
 
