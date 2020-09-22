@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadowMoses.DAL", "ShadowMoses.DAL\ShadowMoses.DAL.csproj", "{C9B51DAC-82D6-4704-A985-29DB1592ACB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShadowMoses.WebAPI", "ShadowMoses.WebAPI\ShadowMoses.WebAPI.csproj", "{12BE300F-39C7-4A28-A3D9-F54B4E774FAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9B51DAC-82D6-4704-A985-29DB1592ACB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9B51DAC-82D6-4704-A985-29DB1592ACB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9B51DAC-82D6-4704-A985-29DB1592ACB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9B51DAC-82D6-4704-A985-29DB1592ACB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12BE300F-39C7-4A28-A3D9-F54B4E774FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12BE300F-39C7-4A28-A3D9-F54B4E774FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12BE300F-39C7-4A28-A3D9-F54B4E774FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12BE300F-39C7-4A28-A3D9-F54B4E774FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5844BC26-C714-4F93-AFF4-2E17A36370ED}
+	EndGlobalSection
+EndGlobal
