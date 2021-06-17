@@ -32,6 +32,7 @@ using System.Threading;
 static void Main(string[] args)
 {
     var t1 = new Thread(PrintMessage);
+    
     string message = "Hello, paramed thread!";
     var t2 = new Thread(() => PrintCustomMessage(message));
 
@@ -74,6 +75,8 @@ static void Main(string[] args)
 // Wake up!
 // true
 ```
+
+Явно создаваемый поток является по умолчанию `Foreground`.
 
 Пока поток ожидает, он переходит в состояние `Blocked` и ему не выделяется процессорное время. В этом примере главный поток ожидает поток `t1` 3 секунды. То есть в ожидание переходит тот поток, ***в котором*** вызван Join, а не ***на котором***.
 
